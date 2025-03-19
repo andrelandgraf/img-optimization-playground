@@ -520,7 +520,7 @@ export default function Home() {
             </div>
             <div className="w-full mt-4">
               {loadedImageSize && (
-                <div className="bg-gray-100 p-5 rounded-md border border-gray-200 shadow-sm">
+                <div className={`bg-gray-100 p-5 rounded-md border border-gray-200 shadow-sm ${imageLoading ? "opacity-75 animate-pulse" : ""}`}>
                   <h3 className="font-medium text-gray-800 text-xl mb-3">
                     Image Information
                   </h3>
