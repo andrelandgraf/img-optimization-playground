@@ -30,6 +30,7 @@ interface ImageHistoryItem {
     width: number;
     height: number;
     fileSize?: number;
+    memoryUsage?: string;
   };
 }
 
@@ -42,7 +43,7 @@ export default function Home() {
   };
 
   const [imageParams, setImageParams] = useState(defaultParams);
-  const [loadedImageSize, setLoadedImageSize] = useState<{width: number, height: number, fileSize?: number} | null>(null);
+  const [loadedImageSize, setLoadedImageSize] = useState<{width: number, height: number, fileSize?: number, memoryUsage?: string} | null>(null);
   const [imageLoading, setImageLoading] = useState(false);
   const [imageHistory, setImageHistory] = useState<ImageHistoryItem[]>([]);
   const [currentUrl, setCurrentUrl] = useState<string>("");
@@ -145,16 +146,23 @@ export default function Home() {
           if (!response.ok) {
             throw new Error(response.statusText || `HTTP error! Status: ${response.status}`);
           }
-          return response.blob();
+          
+          // Get memory usage from header
+          const memoryUsage = response.headers.get('X-Memory-Usage');
+          
+          return { blob: response.blob(), memoryUsage };
         })
-        .then(blob => {
-          console.log(`Image size: ${blob.size} bytes (${blob.size / 1000} KB)`);
+        .then(async ({ blob, memoryUsage }) => {
+          const imageBlob = await blob;
+          console.log(`Image size: ${imageBlob.size} bytes (${imageBlob.size / 1000} KB)`);
+          console.log(`Memory usage: ${memoryUsage || 'Not available'}`);
           
           // Set image dimensions and file size
           const dimensions = {
             width: naturalWidth,
             height: naturalHeight,
-            fileSize: blob.size
+            fileSize: imageBlob.size,
+            memoryUsage: memoryUsage || undefined
           };
           
           setLoadedImageSize(dimensions);
@@ -461,6 +469,28 @@ export default function Home() {
                         </p>
                       </div>
                     )}
+                    {loadedImageSize.memoryUsage && (
+                      <div className="bg-white p-4 rounded border border-gray-200">
+                        <p className="text-sm uppercase text-gray-500 font-medium">Server Memory Usage</p>
+                        <p className="text-xl font-medium text-indigo-600">
+                          {(() => {
+                            // Parse the numeric value from the memory usage string (remove 'bytes' text)
+                            const memUsageMatch = loadedImageSize.memoryUsage.match(/(-?\d+)/);
+                            if (memUsageMatch) {
+                              const memBytes = Math.abs(parseInt(memUsageMatch[0], 10));
+                              if (memBytes < 1000 * 1000) {
+                                return `${(memBytes / 1000).toFixed(2)} KB`;
+                              } else {
+                                const mbSize = memBytes / (1000 * 1000);
+                                const kbSize = mbSize * 1000;
+                                return `${mbSize.toFixed(2)} MB (${Math.round(kbSize)} KB)`;
+                              }
+                            }
+                            return loadedImageSize.memoryUsage;
+                          })()}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -530,6 +560,25 @@ export default function Home() {
                               const kbSize = mbSize * 1000;
                               return `${mbSize.toFixed(2)} MB (${Math.round(kbSize)} KB)`;
                             }
+                          })()}
+                        </div>
+                      )}
+                      {item.actualDimensions.memoryUsage && (
+                        <div className="text-base font-medium mt-1 text-indigo-600 bg-indigo-50 inline-block px-3 py-1 rounded-full">
+                          server memory: {(() => {
+                            // Parse the numeric value from the memory usage string (remove 'bytes' text)
+                            const memUsageMatch = item.actualDimensions.memoryUsage.match(/(-?\d+)/);
+                            if (memUsageMatch) {
+                              const memBytes = Math.abs(parseInt(memUsageMatch[0], 10));
+                              if (memBytes < 1000 * 1000) {
+                                return `${(memBytes / 1000).toFixed(2)} KB`;
+                              } else {
+                                const mbSize = memBytes / (1000 * 1000);
+                                const kbSize = mbSize * 1000;
+                                return `${mbSize.toFixed(2)} MB (${Math.round(kbSize)} KB)`;
+                              }
+                            }
+                            return item.actualDimensions.memoryUsage;
                           })()}
                         </div>
                       )}

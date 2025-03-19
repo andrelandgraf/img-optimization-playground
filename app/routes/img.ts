@@ -10,6 +10,9 @@ function invariantResponse(condition: unknown, message: string, status: number):
 
 export async function loader({ request }: Route.LoaderArgs) {
   try {
+  // Memory usage before processing
+  const beforeBuffers = process.memoryUsage().arrayBuffers;
+
   const url = new URL(request.url);
   const params = new URLSearchParams(url.search);
 
@@ -40,10 +43,13 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 
   if(!format && !width && !height) {
+    const afterBuffers = process.memoryUsage().arrayBuffers;
+
     return new Response(buffer, {
       headers: {
         "Content-Type": "image/png",
         "Content-Length": buffer.length.toString(),
+        "X-Memory-Usage": `${afterBuffers - beforeBuffers} bytes`,
       },
     });
   }
@@ -66,8 +72,15 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 
   // --- Image processing ends here ---
+  const afterBuffers = process.memoryUsage().arrayBuffers;
 
-  return new Response(processedBuffer);
+  return new Response(processedBuffer, {
+    headers: {
+    //   "Content-Type": "image/png",
+    //   "Content-Length": processedBuffer.length.toString(),
+      "X-Memory-Usage": `${afterBuffers - beforeBuffers} bytes`,
+    },
+  });
   } catch (error: unknown) {
     console.error(error);
     if(error instanceof Response) {
