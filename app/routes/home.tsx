@@ -211,12 +211,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Custom CSS for marquee animation
-  const marqueeStyle = showControls ? {
-    animation: 'marqueeBounce 8s linear infinite',
-    right: 'auto',
-  } : {};
-
   const setGoodParams = () => {
     const goodParams = {
       ...imageParams,
@@ -245,24 +239,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 p-8 relative">
-      {/* Define CSS animation */}
-      <style>
-        {`
-          @keyframes marqueeBounce {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(calc(100vw - 100% - 48px)); }
-            50% { transform: translateX(calc(50vw - 50%)); }
-            75% { transform: translateX(0); }
-            100% { transform: translateX(0); }
-          }
-        `}
-      </style>
-
       {/* CAT SIZE SAVER at the top - with marquee effect when showControls is true */}
       {showControls && loadedImageSize && loadedImageSize.fileSize && (
         <div 
-          className="fixed top-4 z-10 bg-indigo-800 text-white py-4 px-6 rounded-lg shadow-2xl transform transition-all duration-300"
-          style={marqueeStyle}
+          className="fixed top-4 right-4 z-10 bg-indigo-800 text-white py-4 px-6 rounded-lg shadow-2xl transform transition-all duration-300"
+          style={showControls ? {
+            animation: 'marqueeBounce 8s linear infinite',
+          } : {}}
         >
           <h3 className="text-2xl font-black text-center mb-1">🐱 CAT SIZE SAVER 🐱</h3>
           <div className="flex flex-col items-center">
@@ -286,9 +269,9 @@ export default function Home() {
         </div>
       )}
 
-      {/* Buttons - Stacked on the Left - Only visible when showControls is true */}
+      {/* Buttons - Stacked on the Right - Only visible when showControls is true */}
       {showControls && (
-        <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-10 flex flex-col space-y-4">
+        <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-10 flex flex-col space-y-4">
           <button 
             onClick={setBadParams}
             className="bg-red-600 text-white font-bold py-4 px-6 rounded-md shadow-lg hover:bg-red-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
@@ -310,13 +293,8 @@ export default function Home() {
       {/* Instructions for toggling controls */}
       <div className="fixed bottom-4 right-4 bg-gray-800 bg-opacity-70 text-white px-3 py-1 rounded-md text-sm">
         Press <kbd className="bg-gray-700 px-2 py-1 rounded">S</kbd> to toggle controls
-      </div>
-
-      <h1 className="text-4xl font-bold text-center text-indigo-800 mb-8">
-        Image Optimization Demo
-      </h1>
-      
-      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">        
+      </div>      
+      <div className="max-w-full mx-4 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
           {/* Form side */}
           <div className="space-y-6">
@@ -493,7 +471,7 @@ export default function Home() {
 
       {/* History Section */}
       {imageHistory.length > 0 && (
-        <div className="max-w-6xl mx-auto mt-8 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
+        <div className="max-w-full mx-4 mt-8 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
           <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
             <h2 className="text-2xl font-semibold text-gray-800">Image History</h2>
             <p className="text-base text-gray-600 mt-1">Record of previously loaded images</p>
