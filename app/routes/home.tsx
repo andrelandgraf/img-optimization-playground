@@ -15,6 +15,7 @@ interface ImageParams {
   width: number | null;
   height: number | null;
   format: string;
+  endpoint: string;
 }
 
 // Define interface for image history item
@@ -25,6 +26,7 @@ interface ImageHistoryItem {
     width: number | null;
     height: number | null;
     format: string;
+    endpoint: string;
   };
   actualDimensions: {
     width: number;
@@ -40,6 +42,7 @@ export default function Home() {
     width: null,
     height: null,
     format: "original",
+    endpoint: "img",
   };
 
   const [imageParams, setImageParams] = useState(defaultParams);
@@ -107,7 +110,7 @@ export default function Home() {
       params.append("format", imageParams.format);
     }
 
-    return `/img?${params.toString()}`;
+    return `/${imageParams.endpoint}?${params.toString()}`;
   };
 
   const previewUrl = generatePreviewUrl();
@@ -236,6 +239,7 @@ export default function Home() {
       width: 400,
       height: 400,
       format: "avif",
+      endpoint: imageParams.endpoint,
     };
     setImageParams(goodParams);
     setTimeout(() => {
@@ -249,6 +253,7 @@ export default function Home() {
       width: null,
       height: null,
       format: "original",
+      endpoint: imageParams.endpoint,
     };
     setImageParams(badParams);
     setTimeout(() => {
@@ -402,6 +407,25 @@ export default function Home() {
                   <option value="webp">webp</option>
                   <option value="avif">avif</option>
                   <option value="original">original</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="endpoint"
+                  className="block text-base font-medium text-gray-800 mb-1"
+                >
+                  Endpoint
+                </label>
+                <select
+                  id="endpoint"
+                  name="endpoint"
+                  value={imageParams.endpoint}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-3 text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
+                >
+                  <option value="img">Buffer Processing (/img)</option>
+                  <option value="img-stream">Stream Processing (/img-stream)</option>
                 </select>
               </div>
             </div>
@@ -569,6 +593,16 @@ export default function Home() {
                         </p>
                       </div>
                     )}
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <p className="text-sm uppercase text-gray-500 font-medium">
+                        Processing Method
+                      </p>
+                      <p className="text-xl font-medium text-purple-600">
+                        {imageParams.endpoint === "img" 
+                          ? "Buffer Processing" 
+                          : "Stream Processing"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -631,6 +665,13 @@ export default function Home() {
                       </div>
                       <div className="text-base text-gray-500 truncate max-w-xs mt-1">
                         src: {item.requestedParams.src}
+                      </div>
+                      <div
+                        className={`text-base mt-1 font-medium text-purple-600 bg-purple-50 inline-block px-3 py-1 rounded-full`}
+                      >
+                        {item.requestedParams.endpoint === "img" 
+                          ? "Buffer Processing" 
+                          : "Stream Processing"}
                       </div>
                     </td>
                     <td className="px-6 py-5 whitespace-nowrap">

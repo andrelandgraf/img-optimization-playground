@@ -6,4 +6,8 @@ export default [
     path: "/img",
     file: "routes/img.ts",
   },
+  {
+    path: "/img-stream",
+    file: "routes/img-stream.ts",
+  },
 ] satisfies RouteConfig;

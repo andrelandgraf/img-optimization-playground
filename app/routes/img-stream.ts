@@ -1,10 +1,10 @@
 import sharp from "sharp";
 import { Readable } from "stream";
-import path from "node:path";
 import { createReadStream, readFileSync } from "node:fs";
 import { setFlagsFromString } from "v8";
 import { runInNewContext } from "vm";
 import type { Route } from "./+types/img";
+import path from "node:path";
 
 function invariantResponse(
   condition: unknown,
@@ -65,9 +65,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 
     const fsPath = path.join(process.cwd(), 'public', src);
 
-    let buffer;
+    let stream;
     try {
-      buffer = await readFileSync(fsPath);
+      stream = await createReadStream(fsPath);
     } catch (error) {
       return new Response(`Image file not found: ${src}`, { status: 404 });
     }
@@ -76,7 +76,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       const afterBuffers =
         process.memoryUsage().arrayBuffers + process.memoryUsage().heapUsed;
 
-      return new Response(buffer, {
+      return new Response(Readable.toWeb(stream) as any, {
         headers: {
           "Content-Type": "image/png",
           "X-Memory-Usage": `${afterBuffers - beforeBuffers} bytes`,
@@ -86,7 +86,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
     // --- Image processing starts here ---
 
-    const pipeline = sharp(buffer);
+    const pipeline = sharp();
 
     // Resize if width & height are provided
     if (width && height) {
@@ -98,13 +98,13 @@ export async function loader({ request }: Route.LoaderArgs) {
       pipeline.toFormat(format);
     }
 
-    const processedBuffer = await pipeline.toBuffer();
+    const resStream = stream.pipe(pipeline);
 
     // --- Image processing ends here ---
 
     const afterBuffers =
       process.memoryUsage().arrayBuffers + process.memoryUsage().heapUsed;
-    return new Response(processedBuffer, {
+    return new Response(Readable.toWeb(resStream) as any, {
       headers: {
         "Content-Type": format 
           ? `image/${format}` 
