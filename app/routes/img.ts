@@ -1,5 +1,6 @@
 import sharp from "sharp";
-import { readFileSync } from "node:fs";
+import { Readable } from "stream";
+import { createReadStream, readFileSync } from "node:fs";
 import type { Route } from "./+types/img";
 
 function invariantResponse(condition: unknown, message: string, status: number): asserts condition {
@@ -11,7 +12,7 @@ function invariantResponse(condition: unknown, message: string, status: number):
 export async function loader({ request }: Route.LoaderArgs) {
   try {
   // Memory usage before processing
-  const beforeBuffers = process.memoryUsage().arrayBuffers;
+  const beforeBuffers = process.memoryUsage().arrayBuffers + process.memoryUsage().heapUsed;
 
   const url = new URL(request.url);
   const params = new URLSearchParams(url.search);
@@ -43,18 +44,18 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 
   if(!format && !width && !height) {
-    const afterBuffers = process.memoryUsage().arrayBuffers;
+    const afterBuffers = process.memoryUsage().arrayBuffers + process.memoryUsage().heapUsed;
 
     return new Response(buffer, {
       headers: {
         "Content-Type": "image/png",
-        "Content-Length": buffer.length.toString(),
         "X-Memory-Usage": `${afterBuffers - beforeBuffers} bytes`,
       },
     });
   }
 
   // --- Image processing starts here ---
+
   const pipeline = sharp(buffer);
 
   // Resize if width & height are provided
@@ -67,13 +68,12 @@ export async function loader({ request }: Route.LoaderArgs) {
     pipeline.toFormat(format);
   }
   
-  // Process the image and return
   const processedBuffer = await pipeline.toBuffer();
 
 
   // --- Image processing ends here ---
-  const afterBuffers = process.memoryUsage().arrayBuffers;
 
+  const afterBuffers = process.memoryUsage().arrayBuffers + process.memoryUsage().heapUsed;
   return new Response(processedBuffer, {
     headers: {
     //   "Content-Type": "image/png",
