@@ -80,14 +80,6 @@ export default function Home() {
     }
   };
 
-  const resetToDefaults = () => {
-    setImageParams(defaultParams);
-    // We need to wait for the next render cycle for the previewUrl to update
-    setTimeout(() => {
-      loadImage();
-    }, 0);
-  };
-
   const generatePreviewUrl = () => {
     const params = new URLSearchParams();
 
@@ -221,7 +213,7 @@ export default function Home() {
       {/* CAT SIZE SAVER at the top */}
       {loadedImageSize && loadedImageSize.fileSize && (
         <div
-          className="fixed top-4 right-4 z-10 bg-indigo-800 text-white py-4 px-6 rounded-lg shadow-2xl transform transition-all duration-300"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 bg-indigo-800 text-white py-4 px-6 rounded-lg shadow-2xl transform transition-all duration-300"
         >
           <h3 className="text-2xl font-black text-center mb-1">
             🐱 CAT SIZE SAVER 🐱
@@ -250,7 +242,7 @@ export default function Home() {
         </div>
       )}
 
-      <div className="max-w-full bg-white border border-gray-200 overflow-hidden">
+      <div className="min-h-screen pt-6 max-w-full bg-white border border-gray-200 overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
           {/* Form side */}
           <div className="space-y-6">
@@ -368,12 +360,6 @@ export default function Home() {
                 }`}
               >
                 {currentUrl === previewUrl ? "Image Loaded" : "Load Image"}
-              </button>
-              <button
-                onClick={resetToDefaults}
-                className="px-6 py-3 text-xl bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Reset to Defaults
               </button>
             </div>
           </div>
