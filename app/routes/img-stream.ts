@@ -63,7 +63,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       400
     );
 
-    const fsPath = path.join(process.cwd(), 'public', src);
+    const fsPath = path.join(process.cwd(), "public", src);
 
     let stream;
     try {
@@ -87,10 +87,10 @@ export async function loader({ request }: Route.LoaderArgs) {
     // --- Image processing starts here ---
 
     const pipeline = sharp();
-    if(format) {
+    if (format) {
       pipeline.toFormat(format);
     }
-    if(width && height) {
+    if (width && height) {
       pipeline.resize(width, height);
     }
 
@@ -102,9 +102,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       process.memoryUsage().arrayBuffers + process.memoryUsage().heapUsed;
     return new Response(Readable.toWeb(resStream) as any, {
       headers: {
-        "Content-Type": format 
-          ? `image/${format}` 
-          : "image/png",
+        "Content-Type": format ? `image/${format}` : "image/png",
         "X-Memory-Usage": `${afterBuffers - beforeBuffers} bytes`,
       },
     });

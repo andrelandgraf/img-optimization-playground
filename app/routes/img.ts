@@ -63,7 +63,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       400
     );
 
-    const fsPath = path.join(process.cwd(), 'public', src);
+    const fsPath = path.join(process.cwd(), "public", src);
 
     let buffer;
     try {
@@ -106,9 +106,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       process.memoryUsage().arrayBuffers + process.memoryUsage().heapUsed;
     return new Response(processedBuffer, {
       headers: {
-        "Content-Type": format 
-          ? `image/${format}` 
-          : "image/png",
+        "Content-Type": format ? `image/${format}` : "image/png",
         "X-Memory-Usage": `${afterBuffers - beforeBuffers} bytes`,
       },
     });
