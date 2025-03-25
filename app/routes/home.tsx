@@ -210,38 +210,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 relative">
-      {/* CAT SIZE SAVER at the top */}
-      {loadedImageSize && loadedImageSize.fileSize && (
-        <div
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 bg-indigo-800 text-white py-4 px-6 rounded-lg shadow-2xl transform transition-all duration-300"
-        >
-          <h3 className="text-2xl font-black text-center mb-1">
-            🐱 CAT SIZE SAVER 🐱
-          </h3>
-          <div className="flex flex-col items-center">
-            <div className="text-xl font-bold">
-              {(() => {
-                const originalSize = 18869; // KB
-                const currentSize = loadedImageSize.fileSize / 1000; // KB
-                const savedPercent = (
-                  ((originalSize - currentSize) / originalSize) *
-                  100
-                ).toFixed(1);
-                return `${savedPercent}% saved`;
-              })()}
-            </div>
-            <div className="text-sm opacity-90">
-              {(() => {
-                const originalSize = 18869; // KB
-                const currentSize = loadedImageSize.fileSize / 1000; // KB
-                const savedKB = (originalSize - currentSize).toFixed(0);
-                return `(${savedKB} KB smaller)`;
-              })()}
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="min-h-screen pt-6 max-w-full bg-white border border-gray-200 overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
           {/* Form side */}
@@ -394,30 +362,30 @@ export default function Home() {
                         <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500"></div>
                       </div>
                     ) : loadedImageSize?.fileSize ? (
-                      <p
-                        className={`text-3xl font-medium ${
-                          loadedImageSize.fileSize >= 1000 * 1000
-                            ? "text-red-600"
-                            : loadedImageSize.fileSize < 100 * 1000
-                            ? "text-green-600"
-                            : "text-gray-800"
-                        }`}
-                      >
-                        {(() => {
-                          if (loadedImageSize.fileSize < 1000 * 1000) {
-                            return `${(
-                              loadedImageSize.fileSize / 1000
-                            ).toFixed(2)} KB`;
-                          } else {
-                            const mbSize =
-                              loadedImageSize.fileSize / (1000 * 1000);
-                            const kbSize = mbSize * 1000;
-                            return `${mbSize.toFixed(2)} MB (${Math.round(
-                              kbSize
-                            )} KB)`;
-                          }
-                        })()}
-                      </p>
+                        <p
+                          className={`text-3xl font-medium ${
+                            loadedImageSize.fileSize >= 1000 * 1000
+                              ? "text-red-600"
+                              : loadedImageSize.fileSize < 100 * 1000
+                              ? "text-green-600"
+                              : "text-gray-800"
+                          }`}
+                        >
+                          {(() => {
+                            if (loadedImageSize.fileSize < 1000 * 1000) {
+                              return `${(
+                                loadedImageSize.fileSize / 1000
+                              ).toFixed(2)} KB`;
+                            } else {
+                              const mbSize =
+                                loadedImageSize.fileSize / (1000 * 1000);
+                              const kbSize = mbSize * 1000;
+                              return `${mbSize.toFixed(2)} MB (${Math.round(
+                                kbSize
+                              )} KB)`;
+                            }
+                          })()}
+                        </p>
                     ) : (
                       <p className="text-3xl font-medium text-gray-400">
                         Not available
@@ -433,27 +401,27 @@ export default function Home() {
                         <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500"></div>
                       </div>
                     ) : loadedImageSize?.memoryUsage ? (
-                      <p className="text-3xl font-medium text-indigo-600">
-                        {(() => {
-                          const memUsageMatch =
-                            loadedImageSize.memoryUsage.match(/(-?\d+)/);
-                          if (memUsageMatch) {
-                            const memBytes = Math.abs(
-                              parseInt(memUsageMatch[0], 10)
-                            );
-                            if (memBytes < 1000 * 1000) {
-                              return `${(memBytes / 1000).toFixed(2)} KB`;
-                            } else {
-                              const mbSize = memBytes / (1000 * 1000);
-                              const kbSize = mbSize * 1000;
-                              return `${mbSize.toFixed(2)} MB (${Math.round(
-                                kbSize
-                              )} KB)`;
+                        <p className="text-3xl font-medium text-indigo-600">
+                          {(() => {
+                            const memUsageMatch =
+                              loadedImageSize.memoryUsage.match(/(-?\d+)/);
+                            if (memUsageMatch) {
+                              const memBytes = Math.abs(
+                                parseInt(memUsageMatch[0], 10)
+                              );
+                              if (memBytes < 1000 * 1000) {
+                                return `${(memBytes / 1000).toFixed(2)} KB`;
+                              } else {
+                                const mbSize = memBytes / (1000 * 1000);
+                                const kbSize = mbSize * 1000;
+                                return `${mbSize.toFixed(2)} MB (${Math.round(
+                                  kbSize
+                                )} KB)`;
+                              }
                             }
-                          }
-                          return loadedImageSize.memoryUsage;
-                        })()}
-                      </p>
+                            return loadedImageSize.memoryUsage;
+                          })()}
+                        </p>
                     ) : (
                       <p className="text-3xl font-medium text-gray-400">
                         Not available
