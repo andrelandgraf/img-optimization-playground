@@ -401,7 +401,16 @@ export default function Home() {
                         <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500"></div>
                       </div>
                     ) : loadedImageSize?.memoryUsage ? (
-                        <p className="text-3xl font-medium text-indigo-600">
+                        <p className={`text-3xl font-medium ${(() => {
+                            const memUsageMatch = loadedImageSize.memoryUsage.match(/(-?\d+)/);
+                            if (memUsageMatch) {
+                              const memBytes = Math.abs(parseInt(memUsageMatch[0], 10));
+                              return memBytes >= 1000 * 1000 
+                                ? "text-red-600" 
+                                : "text-indigo-600";
+                            }
+                            return "text-indigo-600";
+                          })()}`}>
                           {(() => {
                             const memUsageMatch =
                               loadedImageSize.memoryUsage.match(/(-?\d+)/);
@@ -596,10 +605,20 @@ export default function Home() {
                         </div>
                       )}
                       {item.actualDimensions.memoryUsage && (
-                        <div className="text-base font-medium mt-1 text-indigo-600 bg-indigo-50 inline-block px-3 py-1 rounded-full">
+                        <div
+                          className={`text-base font-medium mt-1 inline-block px-3 py-1 rounded-full ${(() => {
+                            const memUsageMatch = item.actualDimensions.memoryUsage.match(/(-?\d+)/);
+                            if (memUsageMatch) {
+                              const memBytes = Math.abs(parseInt(memUsageMatch[0], 10));
+                              return memBytes >= 1000 * 1000
+                                ? "text-red-600 bg-red-50"
+                                : "text-indigo-600 bg-indigo-50";
+                            }
+                            return "text-indigo-600 bg-indigo-50";
+                          })()}`}
+                        >
                           server memory:{" "}
                           {(() => {
-                            // Parse the numeric value from the memory usage string (remove 'bytes' text)
                             const memUsageMatch =
                               item.actualDimensions.memoryUsage.match(
                                 /(-?\d+)/
