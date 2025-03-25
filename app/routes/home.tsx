@@ -69,13 +69,6 @@ export default function Home() {
   const [currentUrl, setCurrentUrl] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const imageDimensions = useRef<{
-    promise: Promise<{
-      width: number;
-      height: number;
-    }>;
-    resolve: (value: { width: number; height: number }) => void;
-  }>(null);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -135,61 +128,54 @@ export default function Home() {
       resolve = r;
     });
 
-    imageDimensions.current = {
-      promise,
-      resolve,
-    };
-
     setErrorMessage(null);
     setCurrentUrl(previewUrl);
     setImageLoading(true);
-    fetchImageStats();
-
-    async function fetchImageStats() {
-      const response = await fetch(previewUrl, {
-        method: "GET",
-        headers: {
-          "Cache-Control": "no-cache",
-          Pragma: "no-cache",
-        },
-      });
-      setImageLoading(false);
-      if (!response.ok) {
-        setErrorMessage(
-          response.statusText || `HTTP error! Status: ${response.status}`
-        );
-        return;
-      }
-
-      // Get memory usage from header
-      const memoryUsage = response.headers.get("X-Memory-Usage");
-      if (!memoryUsage) {
-        setErrorMessage("Memory usage header not found");
-        return;
-      }
-      if (!imageDimensions.current) {
-        setErrorMessage("Image dimensions not found");
-        return;
-      }
-      const dimensions = await imageDimensions.current.promise;
-      const blob = await response.blob();
-      const stats = {
-        width: dimensions.width,
-        height: dimensions.height,
-        fileSize: blob.size,
-        memoryUsage,
-      };
-
-      // Add to history
-      const historyItem: ImageHistoryItem = {
-        timestamp: Date.now(),
-        requestedParams: { ...imageParams },
-        imageStats: stats,
-      };
-
-      setImageHistory((prev) => [historyItem, ...prev]);
-    }
   };
+
+  async function fetchImageStats() {
+    const response = await fetch(previewUrl, {
+      method: "GET",
+      headers: {
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+      },
+    });
+    setImageLoading(false);
+    if (!response.ok) {
+      setErrorMessage(
+        response.statusText || `HTTP error! Status: ${response.status}`
+      );
+      return;
+    }
+
+    // Get memory usage from header
+    const memoryUsage = response.headers.get("X-Memory-Usage");
+    if (!memoryUsage) {
+      setErrorMessage("Memory usage header not found");
+      return;
+    }
+    if (!imgRef.current) {
+      setErrorMessage("Image not found");
+      return;
+    }
+    const blob = await response.blob();
+    const stats = {
+      width: imgRef.current.naturalWidth,
+      height: imgRef.current.naturalHeight,
+      fileSize: blob.size,
+      memoryUsage,
+    };
+
+    // Add to history
+    const historyItem: ImageHistoryItem = {
+      timestamp: Date.now(),
+      requestedParams: { ...imageParams },
+      imageStats: stats,
+    };
+
+    setImageHistory((prev) => [historyItem, ...prev]);
+  }
 
   // Reset loading state when URL changes
   React.useEffect(() => {
@@ -478,16 +464,7 @@ export default function Home() {
                         imageLoading ? "opacity-30" : ""
                       }`}
                       ref={imgRef}
-                      onLoad={() => {
-                        if (imgRef.current && imageDimensions.current) {
-                          imageDimensions.current.resolve({
-                            width: imgRef.current.naturalWidth,
-                            height: imgRef.current.naturalHeight,
-                          });
-                        } else {
-                          throw new Error("Image dimensions not found");
-                        }
-                      }}
+                      onLoad={fetchImageStats}
                     />
                     {imageLoading && (
                       <div className="absolute inset-0 flex items-center justify-center">
