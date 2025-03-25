@@ -87,15 +87,11 @@ export async function loader({ request }: Route.LoaderArgs) {
     // --- Image processing starts here ---
 
     const pipeline = sharp();
-
-    // Resize if width & height are provided
-    if (width && height) {
-      pipeline.resize(width, height);
-    }
-
-    // Apply format conversion if specified
-    if (format) {
+    if(format) {
       pipeline.toFormat(format);
+    }
+    if(width && height) {
+      pipeline.resize(width, height);
     }
 
     const resStream = stream.pipe(pipeline);

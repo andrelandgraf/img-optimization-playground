@@ -56,7 +56,6 @@ export default function Home() {
   const [imageHistory, setImageHistory] = useState<ImageHistoryItem[]>([]);
   const [currentUrl, setCurrentUrl] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [showControls, setShowControls] = useState(true);
   const imgRef = useRef<HTMLImageElement>(null);
 
   const handleInputChange = (
@@ -212,68 +211,17 @@ export default function Home() {
     }
   }, [currentUrl]);
 
-  // Initialize with the default image on mount and add keyboard listener
+  // Initialize with the default image on mount
   React.useEffect(() => {
     loadImage();
-
-    // Add keyboard listener for toggling controls
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Check for s key
-      if (e.code === "KeyS" && e.target === document.body) {
-        setShowControls((prev) => !prev);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setGoodParams = () => {
-    const goodParams = {
-      ...imageParams,
-      width: 400,
-      height: 400,
-      format: "avif",
-      endpoint: imageParams.endpoint,
-    };
-    setImageParams(goodParams);
-    setTimeout(() => {
-      loadImage();
-    }, 0);
-  };
-
-  const setBadParams = () => {
-    const badParams = {
-      ...imageParams,
-      width: null,
-      height: null,
-      format: "original",
-      endpoint: imageParams.endpoint,
-    };
-    setImageParams(badParams);
-    setTimeout(() => {
-      loadImage();
-    }, 0);
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 p-8 relative">
-      {/* CAT SIZE SAVER at the top - with marquee effect when showControls is true */}
-      {showControls && loadedImageSize && loadedImageSize.fileSize && (
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 relative">
+      {/* CAT SIZE SAVER at the top */}
+      {loadedImageSize && loadedImageSize.fileSize && (
         <div
           className="fixed top-4 right-4 z-10 bg-indigo-800 text-white py-4 px-6 rounded-lg shadow-2xl transform transition-all duration-300"
-          style={
-            showControls
-              ? {
-                  animation: "marqueeBounce 8s linear infinite",
-                }
-              : {}
-          }
         >
           <h3 className="text-2xl font-black text-center mb-1">
             🐱 CAT SIZE SAVER 🐱
@@ -302,40 +250,19 @@ export default function Home() {
         </div>
       )}
 
-      {/* Buttons - Stacked on the Right - Only visible when showControls is true */}
-      {showControls && (
-        <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-10 flex flex-col space-y-4">
-          <button
-            onClick={setBadParams}
-            className="bg-red-600 text-white font-bold py-4 px-6 rounded-md shadow-lg hover:bg-red-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            title="Unoptimized Image Settings"
-          >
-            <span className="text-2xl font-black">BAD</span>
-          </button>
-
-          <button
-            onClick={setGoodParams}
-            className="bg-green-600 text-white font-bold py-4 px-6 rounded-md shadow-lg hover:bg-green-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            title="Optimized Image Settings"
-          >
-            <span className="text-2xl font-black">GOOD</span>
-          </button>
-        </div>
-      )}
-
-      {/* Instructions for toggling controls */}
-      <div className="fixed bottom-4 right-4 bg-gray-800 bg-opacity-70 text-white px-3 py-1 rounded-md text-sm">
-        Press <kbd className="bg-gray-700 px-2 py-1 rounded">S</kbd> to toggle
-        controls
-      </div>
-      <div className="max-w-full mx-4 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
+      <div className="max-w-full bg-white border border-gray-200 overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
           {/* Form side */}
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-              Configure Image Parameters
-            </h2>
-
+            {/* Preview URL - Moved to top */}
+            <div className="p-6 bg-indigo-50 rounded-lg border border-indigo-100 mb-8">
+              <h3 className="text-lg font-semibold text-indigo-800 mb-3">
+                URL Preview
+              </h3>
+              <code className="block text-lg bg-white p-4 rounded-md overflow-x-auto border border-indigo-100 text-indigo-900 font-medium">
+                {previewUrl}
+              </code>
+            </div>
             <div className="space-y-4">
               <div>
                 <label
@@ -430,15 +357,6 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-6 p-4 bg-indigo-50 rounded-md border border-indigo-100">
-              <h3 className="text-base font-medium text-indigo-800 mb-2">
-                URL Preview:
-              </h3>
-              <code className="block text-base bg-white p-3 rounded overflow-x-auto border border-indigo-100 text-indigo-900 font-medium">
-                {previewUrl}
-              </code>
-            </div>
-
             <div className="mt-6 flex gap-2">
               <button
                 onClick={loadImage}
@@ -462,9 +380,119 @@ export default function Home() {
 
           {/* Image preview side */}
           <div className="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              Image Preview
-            </h2>
+            {/* Image Information - Moved to top */}
+            <div className="w-full mb-8">
+              <div className={`bg-gray-100 p-6 rounded-lg border border-gray-200 shadow-sm ${imageLoading ? "opacity-75" : ""}`}>
+                <h3 className="font-semibold text-gray-800 text-xl mb-4">
+                  Image Information
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white p-5 rounded-md border border-gray-200">
+                    <p className="text-sm uppercase text-gray-500 font-medium">
+                      Dimensions
+                    </p>
+                    {imageLoading && !loadedImageSize ? (
+                      <div className="flex items-center justify-center py-2">
+                        <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500"></div>
+                      </div>
+                    ) : loadedImageSize ? (
+                      <p className="text-2xl font-medium text-gray-800">
+                        {loadedImageSize.width} × {loadedImageSize.height} px
+                      </p>
+                    ) : (
+                      <p className="text-2xl font-medium text-gray-400">
+                        Not available
+                      </p>
+                    )}
+                  </div>
+                  <div className="bg-white p-5 rounded-md border border-gray-200">
+                    <p className="text-sm uppercase text-gray-500 font-medium">
+                      File Size
+                    </p>
+                    {imageLoading && !loadedImageSize ? (
+                      <div className="flex items-center justify-center py-2">
+                        <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500"></div>
+                      </div>
+                    ) : loadedImageSize?.fileSize ? (
+                      <p
+                        className={`text-2xl font-medium ${
+                          loadedImageSize.fileSize >= 1000 * 1000
+                            ? "text-red-600"
+                            : loadedImageSize.fileSize < 100 * 1000
+                            ? "text-green-600"
+                            : "text-gray-800"
+                        }`}
+                      >
+                        {(() => {
+                          if (loadedImageSize.fileSize < 1000 * 1000) {
+                            return `${(
+                              loadedImageSize.fileSize / 1000
+                            ).toFixed(2)} KB`;
+                          } else {
+                            const mbSize =
+                              loadedImageSize.fileSize / (1000 * 1000);
+                            const kbSize = mbSize * 1000;
+                            return `${mbSize.toFixed(2)} MB (${Math.round(
+                              kbSize
+                            )} KB)`;
+                          }
+                        })()}
+                      </p>
+                    ) : (
+                      <p className="text-2xl font-medium text-gray-400">
+                        Not available
+                      </p>
+                    )}
+                  </div>
+                  <div className="bg-white p-5 rounded-md border border-gray-200">
+                    <p className="text-sm uppercase text-gray-500 font-medium">
+                      Server Memory Usage
+                    </p>
+                    {imageLoading && !loadedImageSize ? (
+                      <div className="flex items-center justify-center py-2">
+                        <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500"></div>
+                      </div>
+                    ) : loadedImageSize?.memoryUsage ? (
+                      <p className="text-2xl font-medium text-indigo-600">
+                        {(() => {
+                          const memUsageMatch =
+                            loadedImageSize.memoryUsage.match(/(-?\d+)/);
+                          if (memUsageMatch) {
+                            const memBytes = Math.abs(
+                              parseInt(memUsageMatch[0], 10)
+                            );
+                            if (memBytes < 1000 * 1000) {
+                              return `${(memBytes / 1000).toFixed(2)} KB`;
+                            } else {
+                              const mbSize = memBytes / (1000 * 1000);
+                              const kbSize = mbSize * 1000;
+                              return `${mbSize.toFixed(2)} MB (${Math.round(
+                                kbSize
+                              )} KB)`;
+                            }
+                          }
+                          return loadedImageSize.memoryUsage;
+                        })()}
+                      </p>
+                    ) : (
+                      <p className="text-2xl font-medium text-gray-400">
+                        Not available
+                      </p>
+                    )}
+                  </div>
+                  <div className="bg-white p-5 rounded-md border border-gray-200">
+                    <p className="text-sm uppercase text-gray-500 font-medium">
+                      Processing Method
+                    </p>
+                    <p className="text-2xl font-medium text-purple-600">
+                      {imageParams.endpoint === "img" 
+                        ? "Buffer Processing" 
+                        : "Stream Processing"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
             {errorMessage && (
               <div className="w-full mb-4 p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-base">
                 {errorMessage}
@@ -482,24 +510,26 @@ export default function Home() {
             <div className="flex items-center justify-center w-full h-full bg-gray-100 p-4 rounded-md relative">
               {currentUrl ? (
                 <>
-                  <img
-                    src={currentUrl}
-                    alt="Optimized preview"
-                    className={`max-w-full max-h-[400px] object-contain rounded shadow-md ${
-                      imageLoading ? "opacity-30" : ""
-                    }`}
-                    ref={imgRef}
-                    onLoad={handleImageLoad}
-                    onError={handleImageError}
-                  />
-                  {imageLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-500"></div>
-                    </div>
-                  )}
+                  <div className="w-[600px] h-[400px] relative flex items-center justify-center">
+                    <img
+                      src={currentUrl}
+                      alt="Optimized preview"
+                      className={`max-w-full max-h-full object-contain rounded shadow-md ${
+                        imageLoading ? "opacity-30" : ""
+                      }`}
+                      ref={imgRef}
+                      onLoad={handleImageLoad}
+                      onError={handleImageError}
+                    />
+                    {imageLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-500"></div>
+                      </div>
+                    )}
+                  </div>
                 </>
               ) : (
-                <div className="flex flex-col items-center justify-center text-gray-500 p-8">
+                <div className="w-[600px] h-[400px] flex flex-col items-center justify-center text-gray-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-16 w-16 mb-4"
@@ -515,95 +545,6 @@ export default function Home() {
                     />
                   </svg>
                   <p className="text-lg">Click "Load Image" to preview</p>
-                </div>
-              )}
-            </div>
-            <div className="w-full mt-4">
-              {loadedImageSize && (
-                <div className={`bg-gray-100 p-5 rounded-md border border-gray-200 shadow-sm ${imageLoading ? "opacity-75 animate-pulse" : ""}`}>
-                  <h3 className="font-medium text-gray-800 text-xl mb-3">
-                    Image Information
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white p-4 rounded border border-gray-200">
-                      <p className="text-sm uppercase text-gray-500 font-medium">
-                        Dimensions
-                      </p>
-                      <p className="text-xl font-medium text-gray-800">
-                        {loadedImageSize.width} × {loadedImageSize.height} px
-                      </p>
-                    </div>
-                    {loadedImageSize.fileSize && (
-                      <div className="bg-white p-4 rounded border border-gray-200">
-                        <p className="text-sm uppercase text-gray-500 font-medium">
-                          File Size
-                        </p>
-                        <p
-                          className={`text-xl font-medium ${
-                            loadedImageSize.fileSize >= 1000 * 1000
-                              ? "text-red-600"
-                              : loadedImageSize.fileSize < 100 * 1000
-                              ? "text-green-600"
-                              : "text-gray-800"
-                          }`}
-                        >
-                          {(() => {
-                            if (loadedImageSize.fileSize < 1000 * 1000) {
-                              return `${(
-                                loadedImageSize.fileSize / 1000
-                              ).toFixed(2)} KB`;
-                            } else {
-                              const mbSize =
-                                loadedImageSize.fileSize / (1000 * 1000);
-                              const kbSize = mbSize * 1000;
-                              return `${mbSize.toFixed(2)} MB (${Math.round(
-                                kbSize
-                              )} KB)`;
-                            }
-                          })()}
-                        </p>
-                      </div>
-                    )}
-                    {loadedImageSize.memoryUsage && (
-                      <div className="bg-white p-4 rounded border border-gray-200">
-                        <p className="text-sm uppercase text-gray-500 font-medium">
-                          Server Memory Usage
-                        </p>
-                        <p className="text-xl font-medium text-indigo-600">
-                          {(() => {
-                            // Parse the numeric value from the memory usage string (remove 'bytes' text)
-                            const memUsageMatch =
-                              loadedImageSize.memoryUsage.match(/(-?\d+)/);
-                            if (memUsageMatch) {
-                              const memBytes = Math.abs(
-                                parseInt(memUsageMatch[0], 10)
-                              );
-                              if (memBytes < 1000 * 1000) {
-                                return `${(memBytes / 1000).toFixed(2)} KB`;
-                              } else {
-                                const mbSize = memBytes / (1000 * 1000);
-                                const kbSize = mbSize * 1000;
-                                return `${mbSize.toFixed(2)} MB (${Math.round(
-                                  kbSize
-                                )} KB)`;
-                              }
-                            }
-                            return loadedImageSize.memoryUsage;
-                          })()}
-                        </p>
-                      </div>
-                    )}
-                    <div className="bg-white p-4 rounded border border-gray-200">
-                      <p className="text-sm uppercase text-gray-500 font-medium">
-                        Processing Method
-                      </p>
-                      <p className="text-xl font-medium text-purple-600">
-                        {imageParams.endpoint === "img" 
-                          ? "Buffer Processing" 
-                          : "Stream Processing"}
-                      </p>
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
