@@ -256,10 +256,10 @@ export default function Home() {
           <div className="space-y-6">
             {/* Preview URL - Moved to top */}
             <div className="p-6 bg-indigo-50 rounded-lg border border-indigo-100 mb-8">
-              <h3 className="text-lg font-semibold text-indigo-800 mb-3">
+              <h3 className="text-xl font-semibold text-indigo-800 mb-3">
                 URL Preview
               </h3>
-              <code className="block text-lg bg-white p-4 rounded-md overflow-x-auto border border-indigo-100 text-indigo-900 font-medium">
+              <code className="block text-xl bg-white p-4 rounded-md overflow-x-auto border border-indigo-100 text-indigo-900 font-medium">
                 {previewUrl}
               </code>
             </div>
@@ -267,7 +267,7 @@ export default function Home() {
               <div>
                 <label
                   htmlFor="src"
-                  className="block text-base font-medium text-gray-800 mb-1"
+                  className="block text-lg font-medium text-gray-800 mb-1"
                 >
                   Image Source URL
                 </label>
@@ -277,14 +277,14 @@ export default function Home() {
                   name="src"
                   value={imageParams.src}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-3 text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
+                  className="w-full px-3 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="width"
-                  className="block text-base font-medium text-gray-800 mb-1"
+                  className="block text-lg font-medium text-gray-800 mb-1"
                 >
                   Width
                 </label>
@@ -295,14 +295,14 @@ export default function Home() {
                   value={imageParams.width === null ? "" : imageParams.width}
                   onChange={handleInputChange}
                   min="1"
-                  className="w-full px-3 py-3 text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
+                  className="w-full px-3 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="height"
-                  className="block text-base font-medium text-gray-800 mb-1"
+                  className="block text-lg font-medium text-gray-800 mb-1"
                 >
                   Height
                 </label>
@@ -313,14 +313,14 @@ export default function Home() {
                   value={imageParams.height === null ? "" : imageParams.height}
                   onChange={handleInputChange}
                   min="1"
-                  className="w-full px-3 py-3 text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
+                  className="w-full px-3 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="format"
-                  className="block text-base font-medium text-gray-800 mb-1"
+                  className="block text-lg font-medium text-gray-800 mb-1"
                 >
                   Format
                 </label>
@@ -329,7 +329,7 @@ export default function Home() {
                   name="format"
                   value={imageParams.format}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-3 text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
+                  className="w-full px-3 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
                 >
                   <option value="webp">webp</option>
                   <option value="avif">avif</option>
@@ -340,7 +340,7 @@ export default function Home() {
               <div>
                 <label
                   htmlFor="endpoint"
-                  className="block text-base font-medium text-gray-800 mb-1"
+                  className="block text-lg font-medium text-gray-800 mb-1"
                 >
                   Endpoint
                 </label>
@@ -349,7 +349,7 @@ export default function Home() {
                   name="endpoint"
                   value={imageParams.endpoint}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-3 text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
+                  className="w-full px-3 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-800"
                 >
                   <option value="img">Buffer Processing (/img)</option>
                   <option value="img-stream">Stream Processing (/img-stream)</option>
@@ -361,7 +361,7 @@ export default function Home() {
               <button
                 onClick={loadImage}
                 disabled={currentUrl === previewUrl}
-                className={`px-6 py-3 text-lg rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                className={`px-6 py-3 text-xl rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                   currentUrl === previewUrl
                     ? "bg-gray-400 text-white cursor-not-allowed"
                     : "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500"
@@ -371,24 +371,18 @@ export default function Home() {
               </button>
               <button
                 onClick={resetToDefaults}
-                className="px-6 py-3 text-lg bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="px-6 py-3 text-xl bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 Reset to Defaults
               </button>
             </div>
           </div>
-
-          {/* Image preview side */}
-          <div className="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-            {/* Image Information - Moved to top */}
+          <div className="flex flex-col items-center justify-center">
             <div className="w-full mb-8">
               <div className={`bg-gray-100 p-6 rounded-lg border border-gray-200 shadow-sm ${imageLoading ? "opacity-75" : ""}`}>
-                <h3 className="font-semibold text-gray-800 text-xl mb-4">
-                  Image Information
-                </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white p-5 rounded-md border border-gray-200">
-                    <p className="text-sm uppercase text-gray-500 font-medium">
+                    <p className="text-base uppercase text-gray-500 font-medium">
                       Dimensions
                     </p>
                     {imageLoading && !loadedImageSize ? (
@@ -396,17 +390,17 @@ export default function Home() {
                         <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500"></div>
                       </div>
                     ) : loadedImageSize ? (
-                      <p className="text-2xl font-medium text-gray-800">
+                      <p className="text-3xl font-medium text-gray-800">
                         {loadedImageSize.width} × {loadedImageSize.height} px
                       </p>
                     ) : (
-                      <p className="text-2xl font-medium text-gray-400">
+                      <p className="text-3xl font-medium text-gray-400">
                         Not available
                       </p>
                     )}
                   </div>
                   <div className="bg-white p-5 rounded-md border border-gray-200">
-                    <p className="text-sm uppercase text-gray-500 font-medium">
+                    <p className="text-base uppercase text-gray-500 font-medium">
                       File Size
                     </p>
                     {imageLoading && !loadedImageSize ? (
@@ -415,7 +409,7 @@ export default function Home() {
                       </div>
                     ) : loadedImageSize?.fileSize ? (
                       <p
-                        className={`text-2xl font-medium ${
+                        className={`text-3xl font-medium ${
                           loadedImageSize.fileSize >= 1000 * 1000
                             ? "text-red-600"
                             : loadedImageSize.fileSize < 100 * 1000
@@ -439,13 +433,13 @@ export default function Home() {
                         })()}
                       </p>
                     ) : (
-                      <p className="text-2xl font-medium text-gray-400">
+                      <p className="text-3xl font-medium text-gray-400">
                         Not available
                       </p>
                     )}
                   </div>
                   <div className="bg-white p-5 rounded-md border border-gray-200">
-                    <p className="text-sm uppercase text-gray-500 font-medium">
+                    <p className="text-base uppercase text-gray-500 font-medium">
                       Server Memory Usage
                     </p>
                     {imageLoading && !loadedImageSize ? (
@@ -453,7 +447,7 @@ export default function Home() {
                         <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500"></div>
                       </div>
                     ) : loadedImageSize?.memoryUsage ? (
-                      <p className="text-2xl font-medium text-indigo-600">
+                      <p className="text-3xl font-medium text-indigo-600">
                         {(() => {
                           const memUsageMatch =
                             loadedImageSize.memoryUsage.match(/(-?\d+)/);
@@ -475,16 +469,16 @@ export default function Home() {
                         })()}
                       </p>
                     ) : (
-                      <p className="text-2xl font-medium text-gray-400">
+                      <p className="text-3xl font-medium text-gray-400">
                         Not available
                       </p>
                     )}
                   </div>
                   <div className="bg-white p-5 rounded-md border border-gray-200">
-                    <p className="text-sm uppercase text-gray-500 font-medium">
+                    <p className="text-base uppercase text-gray-500 font-medium">
                       Processing Method
                     </p>
-                    <p className="text-2xl font-medium text-purple-600">
+                    <p className="text-3xl font-medium text-purple-600">
                       {imageParams.endpoint === "img" 
                         ? "Buffer Processing" 
                         : "Stream Processing"}
@@ -494,10 +488,10 @@ export default function Home() {
               </div>
             </div>
             {errorMessage && (
-              <div className="w-full mb-4 p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-base">
+              <div className="w-full mb-4 p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-lg">
                 {errorMessage}
                 <button
-                  className="ml-2 text-base underline"
+                  className="ml-2 text-lg underline"
                   onClick={() => {
                     setErrorMessage(null);
                     setImageLoading(false);
@@ -556,10 +550,10 @@ export default function Home() {
       {imageHistory.length > 0 && (
         <div className="max-w-full mx-4 mt-8 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
           <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-            <h2 className="text-2xl font-semibold text-gray-800">
+            <h2 className="text-3xl font-semibold text-gray-800">
               Image History
             </h2>
-            <p className="text-base text-gray-600 mt-1">
+            <p className="text-lg text-gray-600 mt-1">
               Record of previously loaded images
             </p>
           </div>
